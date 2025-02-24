@@ -24,54 +24,66 @@ class Punto {
     public String toString() {
         return "(" + x + ", " + y + ")";
     }
+    
+    public int[] coord_cartesianas() {
+        return new int[] {this.x, this.y};
+    }
+    
+    public int[] coord_polares() {
+        int radio = (int)Math.sqrt(this.x * this.x + this.y * this.y);
+        int angulo = (int) Math.atan((double)this.y / this.x);
+        angulo = (int)Math.toDegrees(angulo);
+        return new int[] {radio, angulo};
+    }
 }
 
-class Circulo {
-    private Punto centro;
-    private float radio;
+class Linea {
+    private Punto p1;
+    private Punto p2;
 
-    public Circulo(Punto centro, float radio) {
-        this.centro = centro;
-        this.radio = radio;
+    public Linea(Punto p1, Punto p2) {
+        this.p1 = p1;
+        this.p2 = p2;
     }
 
     @Override
     public String toString() {
-        return "Circulo [Centro=" + centro.toString() + ", Radio=" + radio + "]";
+        return "Linea [P1=" + p1.toString() + ", P2=" + p2.toString() + "]";
     }
 
-    public void dibujaCirculo(Graphics g) {
-        int x = centro.getX() - (int)radio;
-        int y = centro.getY() - (int)radio;
-        int diameter = (int)(2 * radio);
-        g.drawOval(x, y, diameter, diameter);
+    public void dibujaLinea(Graphics g, int width, int height) {
+        int x_offset = width / 2;
+        int y_offset = height / 2;
+        
+        g.drawLine(p1.getX() + x_offset, y_offset - p1.getY(), p2.getX() + x_offset, y_offset - p2.getY());
     }
 }
 
-class CirculoPanel extends JPanel {
-    private Circulo circulo;
+class LineaPanel extends JPanel {
+    private Linea linea;
 
-    public CirculoPanel(Circulo circulo) {
-        this.circulo = circulo;
+    public LineaPanel(Linea linea) {
+        this.linea = linea;
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        circulo.dibujaCirculo(g);
+        int width = getWidth();
+        int height = getHeight();
+        linea.dibujaLinea(g, width, height);
     }
 }
 
-// Clase Principal para ejecutar la aplicación Swing
 public class Main2 {
     public static void main(String[] args) {
-        Punto centro = new Punto(200, 200);
-        float radio = 100;
+        Punto punto1 = new Punto(0, 0); 
+        Punto punto2 = new Punto(50, 50); 
 
-        Circulo circulo = new Circulo(centro, radio);
+        Linea linea = new Linea(punto1, punto2);
 
-        JFrame frame = new JFrame("Dibujar Circulo");
-        CirculoPanel panel = new CirculoPanel(circulo);
+        JFrame frame = new JFrame("Dibujar Linea");
+        LineaPanel panel = new LineaPanel(linea);
 
         frame.add(panel);
         frame.setSize(400, 400);
@@ -79,3 +91,6 @@ public class Main2 {
         frame.setVisible(true);
     }
 }
+
+
+
